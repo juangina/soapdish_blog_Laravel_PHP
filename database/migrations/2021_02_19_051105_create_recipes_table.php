@@ -19,6 +19,7 @@ class CreateRecipesTable extends Migration
             $table->string('name');
             $table->text('description');
             $table->text('special_instructions');
+            $table->string('cover_image', 100)->nullable();
 
             $table->string('bb_cocoa');
             $table->string('bb_shea');
