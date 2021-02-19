@@ -65,7 +65,7 @@ class CreateRecipesTable extends Migration
             $table->string('discount');
 
             $table->string('image_id');
-            $table->int('user_id');
+            $table->integer('user_id');
         });
     }
 
