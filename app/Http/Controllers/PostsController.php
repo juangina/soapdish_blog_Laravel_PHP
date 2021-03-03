@@ -73,15 +73,18 @@ class PostsController extends Controller
         ]);
 
         if($request->hasFile('cover_image')){
-            // Get filename with the extension
+            // Get filename with the extension with a laravel-file() function and a laravel-get...() function
             $filenameWithExt = $request->file('cover_image')->getClientOriginalName();
-            // Get just filename
+            // Get just filename using a php function pathinfo()
+            // BradTravesy did not find a laravel function that extracts the name only, hence using php
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            // Get just ext
+            // Get just ext using a laravel-file() function and a laravel-get...() function
             $extension = $request->file('cover_image')->getClientOriginalExtension();
-            // Filename to store
+            // Filename to store with a "unique" timestamp appended to the original client filename
+            // This ensures that each filename uploaded is unique because time is unique at that moment
+            // This uses a php-time() function
             $fileNameToStore= $filename.'_'.time().'.'.$extension;
-            // Upload Image
+            // Upload Image with laravel-file() and laravel-storeAs() functions
             $path = $request->file('cover_image')->storeAs('public/cover_images', $fileNameToStore);
 		
 	        // make thumbnails
