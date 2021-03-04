@@ -230,7 +230,7 @@ class PostsController extends Controller
         }
 
         //Check for correct user
-        if(auth()->user()->id !==$post->user_id){
+        if(auth()->user()->id !== $post->user_id){
             return redirect('/posts')->with('error', 'Unauthorized Page');
         }
 
