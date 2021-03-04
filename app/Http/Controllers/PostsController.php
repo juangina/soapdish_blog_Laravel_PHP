@@ -80,7 +80,7 @@ class PostsController extends Controller
      /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
      public function edit($id)
      {
-        var_dump($id);
+        //var_dump($id);
         //print_r($str_id); 
         //die();
         //die('<pre>'. var_dump($str_id));
@@ -90,28 +90,29 @@ class PostsController extends Controller
         if (!isset($post)){
             return redirect('/posts')->with('error', 'No Post Found');
         }
-        //value returned from postgres database is a string reprentation of the user_id
+        //The auth()->user()->id value returned from postgres database is a string reprentation of the user_id
         //The auth() function represents the user id as an integer.
         //This has to converted to string to make the comparison work
+        //This phenomenon happens on the local development server
+        //On the heroku production server, it is a proper integer
+        //var_dump(auth()->user()->id);
         
-        var_dump(auth()->user()->id);
-        
-        $str_id = strval(auth()->user()->id);
-        var_dump($str_id);
+        //$str_id = strval(auth()->user()->id);
+        //var_dump($str_id);
         //print_r($str_id); 
         //die();
         //die('<pre>'. var_dump($str_id));
 
         
-        $_userid = $post->user_id;
-        var_dump($_userid);
+        //$_userid = $post->user_id;
+        //var_dump($_userid);
         //print_r($_userid);
-        die();
+        //die();
         //die('<pre>'. var_dump($_userid));
 
         // Check for correct user
-        if($str_id !== $_userid){
-            
+        //if($str_id !== $_userid){
+        if(auth()->user()->id !== $post->user_id) {
             //return redirect('/posts')->with('error', 'Unauthorized Page:'.' id: '.$_id.' userid '.$_userid);
             return redirect('/posts')->with('error', 'Unauthorized Page');
         }
