@@ -21,7 +21,6 @@ class PostsController extends Controller
         $this->middleware('auth', ['except' => ['index', 'show']]);
     }
 
-
     /**
      * Display a listing of the resource.
      *
@@ -38,9 +37,24 @@ class PostsController extends Controller
         //$posts = Post::orderBy('title','desc')->take(1)->get();
         //$posts = Post::orderBy('title','desc')->get();
 
-        $posts = Post::orderBy('created_at','desc')->paginate(4);
+        $posts = Post::orderBy('created_at','desc')->paginate(3);
         return view('posts.index')->with('posts', $posts);
     }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     //CRUD - READ ITEM//////////////////////////////////////////////////////////////////////////////////
+     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     public function show($id)
+     {
+         $post = Post::find($id);
+         return view('posts.show')->with('post', $post);
+     }    
 
     /**
      * Show the form for creating a new resource.
@@ -54,6 +68,56 @@ class PostsController extends Controller
     {
         return view('posts.create');
     }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     //CRUD - UPDATE EDITOR/////////////////////////////////////////////////////////////////////////////////
+     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     public function edit($id)
+     {
+        var_dump($id);
+        //print_r($str_id); 
+        //die();
+        //die('<pre>'. var_dump($str_id));
+        $post = Post::find($id);
+        
+        //Check if post exists before editing
+        if (!isset($post)){
+            return redirect('/posts')->with('error', 'No Post Found');
+        }
+        //value returned from postgres database is a string reprentation of the user_id
+        //The auth() function represents the user id as an integer.
+        //This has to converted to string to make the comparison work
+        
+        var_dump(auth()->user()->id);
+        
+        $str_id = strval(auth()->user()->id);
+        var_dump($str_id);
+        //print_r($str_id); 
+        //die();
+        //die('<pre>'. var_dump($str_id));
+
+        
+        $_userid = $post->user_id;
+        var_dump($_userid);
+        //print_r($_userid);
+        die();
+        //die('<pre>'. var_dump($_userid));
+
+        // Check for correct user
+        if($str_id !== $_userid){
+            
+            //return redirect('/posts')->with('error', 'Unauthorized Page:'.' id: '.$_id.' userid '.$_userid);
+            return redirect('/posts')->with('error', 'Unauthorized Page');
+        }
+
+        return view('posts.edit')->with('post', $post);
+     }    
 
     /**
      * Store a newly created resource in storage.
@@ -107,56 +171,6 @@ class PostsController extends Controller
 
         //return redirect('/posts')->with('success', 'Post Created');
         return redirect('/dashboard')->with('success', 'Post Created');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-     //CRUD - READ ITEM//////////////////////////////////////////////////////////////////////////////////
-     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public function show($id)
-    {
-        $post = Post::find($id);
-        return view('posts.show')->with('post', $post);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-     //CRUD - UPDATE EDITOR/////////////////////////////////////////////////////////////////////////////////
-     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public function edit($id)
-    {
-        $post = Post::find($id);
-        
-        //Check if post exists before deleting
-        if (!isset($post)){
-            return redirect('/posts')->with('error', 'No Post Found');
-        }
-        //value returned from postgres database is a string reprentation of the user_id
-        //The auth() function represents the user id as an integer.
-        //This has to converted to string to make the comparison work
-        $str_id = strval(auth()->user()->id);
-        //var_dump($str_id);
-        $_userid = $post->user_id;
-        //var_dump($_userid);
-
-        // Check for correct user
-        if($str_id !== $_userid){
-            
-            //return redirect('/posts')->with('error', 'Unauthorized Page:'.' id: '.$_id.' userid '.$_userid);
-            return redirect('/posts')->with('error', 'Unauthorized Page');
-        }
-
-        return view('posts.edit')->with('post', $post);
     }
 
     /**
