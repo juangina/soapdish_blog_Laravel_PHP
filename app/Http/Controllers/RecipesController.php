@@ -188,14 +188,14 @@ class RecipesController extends Controller
         //value returned from postgres database is a string reprentation of the user_id
         //The auth() function represents the user id as an integer.
         //This has to converted to string to make the comparison work
-        $str_id = strval(auth()->user()->id);
+        //$str_id = strval(auth()->user()->id);
         //var_dump($str_id);
-        $_userid = $recipe->user_id;
+        //$_userid = $recipe->user_id;
         //var_dump($_userid);
 
         // Check for correct user
-        if($str_id !== $_userid){
-            
+        //if($str_id !== $_userid){
+        if(auth()->user()->id !== $recipe->user_id){
             //return redirect('/posts')->with('error', 'Unauthorized Page:'.' id: '.$_id.' userid '.$_userid);
             return redirect('/recipes')->with('error', 'Unauthorized Page');
         }
