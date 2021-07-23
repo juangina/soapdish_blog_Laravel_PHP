@@ -3,7 +3,7 @@
 @section('content')
     <a href="/posts" class='btn btn-secondary'>Go Back to Recipe Blog</a>
     <h1>{{$post->title}}</h1>
-    <img src="/storage/cover_images/{{$post->cover_image}}" style="width: 100%" alt="Different Soaps">
+    <img src="{{$post->cover_image}}" style="width: 100%" alt="Different Soaps">
     <hr>
     <div>{!!$post->body!!}</div>
     <hr>

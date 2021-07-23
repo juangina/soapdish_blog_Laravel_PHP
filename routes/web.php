@@ -28,6 +28,7 @@ Route::get('/recipes/design', 'App\Http\Controllers\RecipesController@design');
 Route::resource('posts', 'App\Http\Controllers\PostsController');
 Route::resource('recipes', 'App\Http\Controllers\RecipesController');
 
+
 Auth::routes();
 
 

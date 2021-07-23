@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
+//use Intervention\Image\Facades\Image;
+use App\Models\Image;
 use App\Models\Post;
 use DB;
 
@@ -51,9 +52,12 @@ class PostsController extends Controller
      //CRUD - READ ITEM//////////////////////////////////////////////////////////////////////////////////
      /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
      public function show($id)
+     //public function show(Image $image)
      {
          $post = Post::find($id);
          return view('posts.show')->with('post', $post);
+         //return Storage::disk('s3')->response('public/cover_images/'.$image->filename);
+         //return $image->url;
      }    
 
     /**
@@ -112,10 +116,10 @@ class PostsController extends Controller
 
         // Check for correct user
         //if($str_id !== $_userid){
-        if(auth()->user()->id !== $post->user_id) {
+        /*if(auth()->user()->id !== $post->user_id) {
             //return redirect('/posts')->with('error', 'Unauthorized Page:'.' id: '.$_id.' userid '.$_userid);
             return redirect('/posts')->with('error', 'Unauthorized Page');
-        }
+        }*/
 
         return view('posts.edit')->with('post', $post);
      }    
@@ -150,7 +154,12 @@ class PostsController extends Controller
             // This uses a php-time() function
             $fileNameToStore= $filename.'_'.time().'.'.$extension;
             // Upload Image with laravel-file() and laravel-storeAs() functions
-            $path = $request->file('cover_image')->storeAs('public/cover_images', $fileNameToStore);
+            $path = $request->file('cover_image')->storeAs('public/cover_images', $fileNameToStore, 's3');
+
+            $image = Image::create([
+                'filename' => basename($path),
+                'url' => Storage::disk('s3')->url($path)
+            ]);
 		
 	        // make thumbnails
 	        //$thumbStore = 'thumb.'.$filename.'_'.time().'.'.$extension;
@@ -172,6 +181,7 @@ class PostsController extends Controller
 
         //return redirect('/posts')->with('success', 'Post Created');
         return redirect('/dashboard')->with('success', 'Post Created');
+        //return $image;
     }
 
     /**
@@ -202,8 +212,8 @@ class PostsController extends Controller
             $extension = $request->file('cover_image')->getClientOriginalExtension();
             // Filename to store
             $fileNameToStore= $filename.'_'.time().'.'.$extension;
-            // Upload Image
-            $path = $request->file('cover_image')->storeAs('public/cover_images', $fileNameToStore);
+            // Upload Image to S3 Bucket on AWS
+            $path = $request->file('cover_image')->storeAs('public/cover_images', $fileNameToStore, 's3');
             // Delete file if exists
             Storage::delete('public/cover_images/'.$post->cover_image);
 		
@@ -219,11 +229,27 @@ class PostsController extends Controller
         $post->body = $request->input('body');
         if($request->hasFile('cover_image')){
             $post->cover_image = $fileNameToStore;
+            $post->cover_image = Storage::disk('s3')->url($path);
         }
         $post->save();
+        Storage::disk('s3')->setVisibility($path, 'public');
 
         //return redirect('/posts')->with('success', 'Post Updated');
         return redirect('/dashboard')->with('success', 'Post Updated');
+
+
+        
+
+        //$image = Image::create([
+            //'filename' => basename($path),
+            //'url' => Storage::disk('s3')->url($path)
+        //]);
+        //return $image;
+        // For a route with the following URI: posts/{image}
+        //return redirect('/posts')->with('success', 'Post Created');
+        //Example1: return redirect('states/'.$id.'/regions')
+        //Example2: return redirect()->route('posts', [$image]);
+        //return redirect('posts/'.$image);
     }
 
     /**
