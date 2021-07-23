@@ -30,10 +30,10 @@
                 @else
                     <ul class="nav navbar-nav ml-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="/recipes">Recipes</a>
+                            <a class="nav-link" href="/posts">Blog</a>
                         </li> 
                         <li class="nav-item">
-                            <a class="nav-link" href="/posts">Blog</a>
+                            <a class="nav-link" href="/recipes">Recipes</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link border-right" href="/recipes/design">Design</a>

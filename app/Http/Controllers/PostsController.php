@@ -38,7 +38,7 @@ class PostsController extends Controller
         //$posts = Post::orderBy('title','desc')->take(1)->get();
         //$posts = Post::orderBy('title','desc')->get();
 
-        $posts = Post::orderBy('created_at','desc')->paginate(3);
+        $posts = Post::orderBy('created_at','desc')->paginate(4);
         return view('posts.index')->with('posts', $posts);
     }
 
@@ -216,6 +216,7 @@ class PostsController extends Controller
             $path = $request->file('cover_image')->storeAs('public/cover_images', $fileNameToStore, 's3');
             // Delete file if exists
             Storage::delete('public/cover_images/'.$post->cover_image);
+            Storage::disk('s3')->setVisibility($path, 'public');
 		
             //Make thumbnails
             //$thumbStore = 'thumb.'.$filename.'_'.time().'.'.$extension;
@@ -224,15 +225,14 @@ class PostsController extends Controller
             //$thumb->save('storage/cover_images/'.$thumbStore);
         }
 
-        // Update Post
+        // Update Post in Database
         $post->title = $request->input('title');
         $post->body = $request->input('body');
         if($request->hasFile('cover_image')){
-            $post->cover_image = $fileNameToStore;
+            //$post->cover_image = $fileNameToStore;
             $post->cover_image = Storage::disk('s3')->url($path);
         }
         $post->save();
-        Storage::disk('s3')->setVisibility($path, 'public');
 
         //return redirect('/posts')->with('success', 'Post Updated');
         return redirect('/dashboard')->with('success', 'Post Updated');
