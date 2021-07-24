@@ -1,7 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-    <a href="/recipes" class='btn btn-secondary m-2'>Go Back to Recipes</a>
+    <!--
+        <a href="/recipes" class='btn btn-secondary m-2'>Go Back to Recipes</a>
+    -->
+    <a href="<?php echo url()->previous()?>" class='btn btn-secondary'>Go Back</a>
     <h1>{{$recipe->name}}</h1>
 
     <hr>

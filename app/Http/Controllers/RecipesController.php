@@ -195,10 +195,10 @@ class RecipesController extends Controller
 
         // Check for correct user
         //if($str_id !== $_userid){
-        if(auth()->user()->id !== $recipe->user_id){
+        //if(auth()->user()->id !== $recipe->user_id){
             //return redirect('/posts')->with('error', 'Unauthorized Page:'.' id: '.$_id.' userid '.$_userid);
-            return redirect('/recipes')->with('error', 'Unauthorized Page');
-        }
+            //return redirect('/recipes')->with('error', 'Unauthorized Page');
+        //}
 
         return view('recipes.edit')->with('recipe', $recipe);
     }

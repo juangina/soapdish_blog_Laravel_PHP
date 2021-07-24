@@ -16,6 +16,7 @@
             {{Form::file('cover_image')}}
         </div>
         {{Form::submit('Submit', ['class'=>'btn btn-primary'])}}
+        <a href="/dashboard" class="btn btn-secondary">Cancel</a>
     {!! Form::close() !!}
 
 

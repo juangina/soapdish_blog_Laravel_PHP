@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-6 col-md-offset-2">
                     <a href="/posts/create" class="btn btn-primary">Create Post</a>
-                    <h3>Your Recipe Blog Posts</h3>
+                    <h3>Your Blog Posts</h3>
                     @if(count($posts) > 0)
                         <table class="table table-striped">
                             <tr>
@@ -15,7 +15,7 @@
                             </tr>
                             @foreach($posts as $post)
                                 <tr>
-                                    <td>{{$post->title}}</td>
+                                    <td><a href="/posts/{{$post->id}}">{{$post->title}}</a></td>
                                     <td><a href="/posts/{{$post->id}}/edit" class="btn btn-default">Edit</a></td>
                                     <td>
                                         {!!Form::open(['action' => ['App\Http\Controllers\PostsController@destroy', $post->id], 'method' => 'POST', 'class' => 'pull-right'])!!}
@@ -42,7 +42,7 @@
                     </tr>
                     @foreach($recipes as $recipe)
                         <tr>
-                            <td>{{$recipe->name}}</td>
+                            <td><a href="/recipes/{{$recipe->id}}">{{$recipe->name}}</a></td>
                             <td><a href="/recipes/{{$recipe->id}}/edit" class="btn btn-default">Edit</a></td>
                             <td>
                                 {!!Form::open(['action' => ['App\Http\Controllers\RecipesController@destroy', $post->id], 'method' => 'POST', 'class' => 'pull-right'])!!}

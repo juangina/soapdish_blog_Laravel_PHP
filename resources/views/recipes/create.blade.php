@@ -336,6 +336,7 @@
 
 
     {{Form::submit('Submit', ['class'=>'btn btn-primary'])}}
+    <a href="/dashboard" class="btn btn-secondary">Cancel</a>
     {!! Form::close() !!}
     <div style='height: 100px;'></div>
 

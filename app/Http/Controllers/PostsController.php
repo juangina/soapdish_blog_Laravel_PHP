@@ -155,11 +155,9 @@ class PostsController extends Controller
             $fileNameToStore= $filename.'_'.time().'.'.$extension;
             // Upload Image with laravel-file() and laravel-storeAs() functions
             $path = $request->file('cover_image')->storeAs('public/cover_images', $fileNameToStore, 's3');
+            echo $path;
 
-            $image = Image::create([
-                'filename' => basename($path),
-                'url' => Storage::disk('s3')->url($path)
-            ]);
+            Storage::disk('s3')->setVisibility($path, 'public');
 		
 	        // make thumbnails
 	        //$thumbStore = 'thumb.'.$filename.'_'.time().'.'.$extension;
@@ -167,8 +165,6 @@ class PostsController extends Controller
             //$thumb->resize(80, 80);
             //$thumb->save('storage/cover_images/'.$thumbStore);
 		
-        } else {
-            $fileNameToStore = 'noimage.jpg';
         }
 
         // Create Post
@@ -176,7 +172,11 @@ class PostsController extends Controller
         $post->title = $request->input('title');
         $post->body = $request->input('body');
         $post->user_id = auth()->user()->id;
-        $post->cover_image = $fileNameToStore;
+        if($request->hasFile('cover_image')){
+            $post->cover_image = Storage::disk('s3')->url($path);
+        } else {
+            $post->cover_image = 'https://soapdish.s3.amazonaws.com/public/cover_images/pexels-taryn-elliott-4426556+(Large).jpg';
+        }
         $post->save();
 
         //return redirect('/posts')->with('success', 'Post Created');
@@ -210,12 +210,20 @@ class PostsController extends Controller
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             // Get just ext
             $extension = $request->file('cover_image')->getClientOriginalExtension();
+
+
             // Filename to store
             $fileNameToStore= $filename.'_'.time().'.'.$extension;
+
             // Upload Image to S3 Bucket on AWS
             $path = $request->file('cover_image')->storeAs('public/cover_images', $fileNameToStore, 's3');
-            // Delete file if exists
-            Storage::delete('public/cover_images/'.$post->cover_image);
+
+            // Delete existing image on disk
+            if($post->cover_image != 'https://soapdish.s3.amazonaws.com/public/cover_images/pexels-taryn-elliott-4426556+(Large).jpg') {
+                Storage::disk('s3')->delete($post->cover_image);
+            }
+            
+
             Storage::disk('s3')->setVisibility($path, 'public');
 		
             //Make thumbnails
@@ -277,7 +285,7 @@ class PostsController extends Controller
 
         if($post->cover_image != 'noimage.jpg'){
             // Delete Image
-            Storage::delete('public/cover_images/'.$post->cover_image);
+            Storage::disk('s3')->delete($post->cover_image);;
         }
         
         $post->delete();
