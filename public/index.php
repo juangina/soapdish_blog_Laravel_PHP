@@ -1,7 +1,10 @@
 <?php
-
+//This is the same as use Illuminate\Contracts\Http\Kernel as Kernal;
 use Illuminate\Contracts\Http\Kernel;
+//This is the same as use Illuminate\Http\Request as Request;
 use Illuminate\Http\Request;
+
+//echo __DIR__.'/../vendor/autoload.php';
 
 define('LARAVEL_START', microtime(true));
 
@@ -48,8 +51,13 @@ $app = require_once __DIR__.'/../bootstrap/app.php';
 
 $kernel = $app->make(Kernel::class);
 
-$response = tap($kernel->handle(
-    $request = Request::capture()
-))->send();
+// Typically tap has two arguments($value, $func).  In this example, it only has one argument ($func)
+// Tap is like a value pass through operator function.  The value is operated on
+// and the original value is returned from the function.
+// The argument is passed to the arrowed shorthand function send for some operation
+// Then the argument is returned back to response.
+$response = tap(
+    $kernel->handle($request = Request::capture())
+)->send();
 
 $kernel->terminate($request, $response);

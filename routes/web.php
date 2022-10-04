@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,12 +23,13 @@ Route::get('/', function () {
 Route::get('/', 'App\Http\Controllers\PagesController@index');
 Route::get('/about', 'App\Http\Controllers\PagesController@about');
 Route::get('/services', 'App\Http\Controllers\PagesController@services');
-Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index']);
-Route::get('/recipes/design', 'App\Http\Controllers\RecipesController@design');
+
+Route::get('/dashboard', [DashboardController::class, 'index']);
 
 Route::resource('posts', 'App\Http\Controllers\PostsController');
-Route::resource('recipes', 'App\Http\Controllers\RecipesController');
 
+Route::get('/recipes/design', 'App\Http\Controllers\RecipesController@design');
+Route::resource('recipes', 'App\Http\Controllers\RecipesController');
 
 Auth::routes();
 
